@@ -1,9 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 test("GET booking summary", async ({ request }) => {
-  const URL = process.env.URL + "booking/summary?roomid=1";
-  console.log("URL => " + URL);
-  const response = await request.get(URL
+  const response = await request.get("booking/summary?roomid=1"
   );
 
   expect(response.status()).toBe(200);
