@@ -1,8 +1,20 @@
 import { test, expect } from "@playwright/test";
+import { request } from "http";
 
 
 test.describe("booking/ GET requests", async () => {
-  const savedToken = "aNhjQgGCITFfkYg9";
+  let cookie: string;
+
+  test.beforeAll(async ({ request }) => {
+    const response = await request.post("/auth/login", {
+      data: {
+        "username": "admin",
+        "password": "password"
+      }
+    });
+    const headers = response.headers();
+    cookie = headers['set-cookie'];
+  })
 
 
   test("GET booking summary", async ({ request }) => {
@@ -20,7 +32,7 @@ test.describe("booking/ GET requests", async () => {
 
   test("GET all bookings with details", async ({ request }) => {
     const response = await request.get("booking/", {
-      headers: { cookie: `token=${savedToken}` },
+      headers: { cookie: cookie },
     });
 
     expect(response.status()).toBe(200);
@@ -37,7 +49,7 @@ test.describe("booking/ GET requests", async () => {
 
   test("GET booking by id with details", async ({ request }) => {
     const response = await request.get("booking/1", {
-      headers: { cookie: `token=${savedToken}` },
+      headers: { cookie: cookie },
     });
 
     expect(response.status()).toBe(200);
